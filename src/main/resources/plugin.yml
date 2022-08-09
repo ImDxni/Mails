@@ -1,0 +1,6 @@
+name: Posta
+version: '${version}'
+main: org.waraccademy.posta.Posta
+authors: [ WarAccademy ]
+description: Posta
+depend: [Containers,HeadDatabase]
