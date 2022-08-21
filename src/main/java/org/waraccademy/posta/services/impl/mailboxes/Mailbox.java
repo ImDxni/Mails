@@ -7,13 +7,17 @@ public class Mailbox {
 
     private boolean packages = false;
 
-    public Mailbox(String owner) {
+    private final int item;
+
+    public Mailbox(String owner, int item) {
         this.owner = owner;
+        this.item = item;
     }
 
-    public Mailbox(String owner, boolean locked) {
+    public Mailbox(String owner, boolean locked,int item) {
         this.owner = owner;
         this.locked = locked;
+        this.item = item;
     }
 
     public String getOwner() {
@@ -22,6 +26,10 @@ public class Mailbox {
 
     public int getId() {
         return id;
+    }
+
+    public int getItem() {
+        return item;
     }
 
     public boolean isLocked() {
@@ -40,4 +48,6 @@ public class Mailbox {
     public void setId(int id) {
         this.id = id;
     }
+
+
 }

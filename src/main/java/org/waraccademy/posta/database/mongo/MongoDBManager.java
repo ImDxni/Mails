@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class MongoDBManager {
     private final IMongoDBManager manager;
     private MongoCollection<Document> collection;
-    private MongoCollection<Document> containers;
+    private final MongoCollection<Document> containers;
 
     public MongoDBManager(Posta plugin) {
         manager = plugin.getMongo();
@@ -45,6 +45,10 @@ public class MongoDBManager {
 
     public void deleteMailbox(int id){
         collection.deleteOne(Filters.eq("id",id)).subscribe(new ObservableSubscriber<>());
+    }
+
+    public void deletePackage(int id){
+        containers.deleteOne(Filters.eq("id",id)).subscribe(new ObservableSubscriber<>());
     }
 
     public void createMailbox(int id){

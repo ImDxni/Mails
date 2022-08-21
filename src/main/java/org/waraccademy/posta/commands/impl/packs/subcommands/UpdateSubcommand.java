@@ -9,7 +9,8 @@ import org.waraccademy.posta.services.impl.packages.Package;
 import org.waraccademy.posta.services.impl.packages.PackageService;
 
 import java.util.Locale;
-import java.util.Optional;
+
+import static org.waraccademy.posta.utils.Utils.color;
 
 public class UpdateSubcommand implements Subcommand {
     private final PackageService service = Posta.getInstance().getPackageService();
@@ -19,8 +20,9 @@ public class UpdateSubcommand implements Subcommand {
     public boolean onCommand(CommandSender sender, String[] args) {
         if(args.length < 2) return false;
 
-        if(NumberUtils.isNumber(args[0]))
+        if(!NumberUtils.isNumber(args[0]))
             return false;
+
 
         int id = Integer.parseInt(args[0]);
         Package.STATUS status;
@@ -40,6 +42,7 @@ public class UpdateSubcommand implements Subcommand {
         }
 
         service.updateStatus(id,status);
+        sender.sendMessage(color(config.getString("messages.package-updated")));
 
 
         return true;

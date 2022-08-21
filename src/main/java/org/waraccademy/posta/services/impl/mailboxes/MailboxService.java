@@ -1,12 +1,12 @@
 package org.waraccademy.posta.services.impl.mailboxes;
 
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
-import org.waraccademy.libs.nbtapi.NBTItem;
 import org.waraccademy.posta.Posta;
 import org.waraccademy.posta.database.mongo.MongoDBManager;
 import org.waraccademy.posta.database.sql.MySQLManager;
@@ -49,13 +49,12 @@ public class MailboxService implements Service {
                 boolean locked = resultSet.getBoolean("private");
 
                 String owner = resultSet.getString("name");
-                Mailbox mailbox = new Mailbox(owner,locked);
+                int item = resultSet.getInt("item");
+                Mailbox mailbox = new Mailbox(owner,locked,item);
                 mailbox.setPackages(packages);
                 mailbox.setId(id);
 
                 mailboxes.put(loc,mailbox);
-
-                System.out.println("§2Caricata Mailbox a: " + loc);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -76,10 +75,10 @@ public class MailboxService implements Service {
     }
 
 
-    public void createMailbox(Location location, String owner, boolean locked){
-        Mailbox mailbox = new Mailbox(owner,locked);
+    public void createMailbox(Location location, String owner, boolean locked,int itemID){
+        Mailbox mailbox = new Mailbox(owner,locked,itemID);
 
-        sqlManager.insertMailbox(location,owner).whenComplete((id,error) -> {
+        sqlManager.insertMailbox(location,owner,itemID).whenComplete((id,error) -> {
             if(error != null){
                 error.printStackTrace();
                 return;
@@ -111,42 +110,35 @@ public class MailboxService implements Service {
         return Optional.ofNullable(mailboxes.get(triple));
     }
 
+    public Optional<Mailbox> getMailbox(Triple<Integer> loc){
+        return Optional.ofNullable(mailboxes.get(loc));
+    }
+
     public CompletableFuture<List<ItemStack>> getItems(int id){
         return mongoDBManager.getMailboxItems(id);
     }
 
-    public void insertItems(int id, int packageID) {
-        getItems(id).thenCombine(mongoDBManager.getPackageItems(packageID),
-                (mailbox, pack) -> {
-                    List<ItemStack> result = new ArrayList<>(mailbox);
-
-                    result.addAll(pack);
-
-                    return result;
+    public void insertItems(int id, ItemStack item) {
+        getItems(id).thenApply((mailbox) -> {
+                    mailbox.add(item);
+                    return mailbox;
                 }).thenAccept((result) -> mongoDBManager.saveMailbox(id, result));
+
+        sqlManager.updateMailbox(id,true);
     }
 
     public void clearItems(int id){
         mongoDBManager.saveMailbox(id,Collections.emptyList());
+
+        sqlManager.updateMailbox(id,false);
     }
 
-    public List<Triple<Integer>> getLocations(String owner){
+    public List<Triple<Integer>> getLocations(String owner) {
         List<Triple<Integer>> list = new ArrayList<>();
 
         for (Map.Entry<Triple<Integer>, Mailbox> entry : mailboxes.entrySet()) {
-            if(entry.getValue().getOwner().equals(owner))
+            if (entry.getValue().getOwner().equals(owner))
                 list.add(entry.getKey());
-        }
-
-        return list;
-    }
-
-    public List<Mailbox> getMailboxes(String owner){
-        List<Mailbox> list = new ArrayList<>();
-
-        for (Map.Entry<Triple<Integer>, Mailbox> entry : mailboxes.entrySet()) {
-            if(entry.getValue().getOwner().equals(owner))
-                list.add(entry.getValue());
         }
 
         return list;
@@ -173,6 +165,8 @@ public class MailboxService implements Service {
 
         nbtItem.setBoolean("Mailbox",locked);
         nbtItem.setString("MailboxOwner", target);
+        nbtItem.setInteger("itemID",id);
+
         return nbtItem.getItem();
     }
 

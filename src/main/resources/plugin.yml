@@ -4,3 +4,6 @@ main: org.waraccademy.posta.Posta
 authors: [ WarAccademy ]
 description: Posta
 depend: [Containers,HeadDatabase]
+commands:
+  pacco:
+  cassetta:

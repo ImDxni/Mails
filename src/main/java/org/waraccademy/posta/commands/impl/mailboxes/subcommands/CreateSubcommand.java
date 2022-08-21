@@ -3,19 +3,11 @@ package org.waraccademy.posta.commands.impl.mailboxes.subcommands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
-import org.waraccademy.libs.nbtapi.NBTItem;
 import org.waraccademy.posta.Posta;
 import org.waraccademy.posta.commands.Subcommand;
 import org.waraccademy.posta.database.sql.MySQLManager;
 import org.waraccademy.posta.services.impl.mailboxes.MailboxService;
-import org.waraccademy.posta.utils.Utils;
-
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.waraccademy.posta.utils.Utils.color;
 

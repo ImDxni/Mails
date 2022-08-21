@@ -3,10 +3,7 @@ package org.waraccademy.posta.commands.impl.packs;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.waraccademy.posta.commands.complex.ComplexCommand;
-import org.waraccademy.posta.commands.impl.packs.subcommands.CreateSubcommand;
-import org.waraccademy.posta.commands.impl.packs.subcommands.SignSubcommand;
-import org.waraccademy.posta.commands.impl.packs.subcommands.TrackSubcommand;
-import org.waraccademy.posta.commands.impl.packs.subcommands.UpdateSubcommand;
+import org.waraccademy.posta.commands.impl.packs.subcommands.*;
 
 public class PackCommand extends ComplexCommand {
 
@@ -14,7 +11,8 @@ public class PackCommand extends ComplexCommand {
         super(plugin, "pacco", new CreateSubcommand(),
                 new SignSubcommand(),
                 new TrackSubcommand(),
-                new UpdateSubcommand());
+                new UpdateSubcommand(),
+                new ListSubcommand());
     }
 
     @Override

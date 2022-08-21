@@ -1,0 +1,60 @@
+database:
+  hostname:
+  username:
+  password:
+  databaseName:
+
+pack:
+  name: "Pacco postale (%id%)"
+  lore:
+    - "Mittente: %sender%"
+    - "Destinatario: %target%"
+
+
+mailbox:
+  name: "Cassetta postale di %owner%"
+  lore:
+    - "Piazzami"
+
+mailboxes:
+  rosso:
+    id: 45968
+
+packages:
+  pacco-9:
+    material: SKULL
+    data: 21493
+    name: "Pacco postale"
+    size: 9
+    title: "Pacco postale"
+    lore:
+      - "Grandezza: 9"
+
+messages:
+  no-mailboxes: "Non esistono cassette postali indirizzate a quel proprietario"
+  no-packages: "Non ci sono pacchi indirizzati a quel proprietario"
+  has-packages: "Non puoi rompere la cassetta postale con dei pacchi dentro!"
+  no-sender: "Il mittente non esiste!"
+  no-target: "Il destinatario non esiste!"
+  player-not-found: "Giocatore non trovato"
+  color-not-found: "Colore non trovato!"
+  pack-signed: "Pacco firmato!"
+  packages-available: "Hai un pacco da prelevare alla cassetta postale: %x% %y% %z%"
+  package-updated: "Pacco aggiornato"
+  mailbox:
+    list:
+      prefix: "Cassette postali di %target%"
+      element: "%location%"
+  pack:
+    status:
+      stop: "Fermoposta"
+      delivering: "In consegna"
+      delivered: "Consegnato"
+    list:
+      prefix: "Pacchi di %target%"
+      element: "%sender% - %id% (%status%)"
+    track:
+      prefix: "Traccia pacchi di %target%"
+      element: "Pacco %id% (%status%)"
+
+

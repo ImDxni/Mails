@@ -1,10 +1,13 @@
 package org.waraccademy.posta;
 
+import de.tr7zw.nbtinjector.NBTInjector;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.waraccademy.mongo.database.IMongoDBManager;
+import org.waraccademy.posta.commands.impl.mailboxes.MailboxCommand;
+import org.waraccademy.posta.commands.impl.packs.PackCommand;
 import org.waraccademy.posta.configuration.FileManager;
 import org.waraccademy.posta.database.mongo.MongoDBManager;
 import org.waraccademy.posta.database.sql.MySQLManager;
@@ -12,6 +15,8 @@ import org.waraccademy.posta.listeners.HeadDatabaseListener;
 import org.waraccademy.posta.listeners.JoinListener;
 import org.waraccademy.posta.listeners.mailbox.BlockListener;
 import org.waraccademy.posta.listeners.packages.InteractListener;
+import org.waraccademy.posta.listeners.packages.InventoryListener;
+import org.waraccademy.posta.listeners.packages.OpenListener;
 import org.waraccademy.posta.services.Service;
 import org.waraccademy.posta.services.impl.mailboxes.MailboxService;
 import org.waraccademy.posta.services.impl.packages.PackageService;
@@ -36,30 +41,31 @@ public final class Posta extends JavaPlugin {
     public void onEnable() {
         instance = this;
         mongo = Bukkit.getServicesManager().getRegistration(IMongoDBManager.class).getProvider();
-        FileManager manager = new FileManager("config",this);
+        FileManager manager = new FileManager("config", this);
         manager.saveDefault();
         config = manager.getConfig();
 
         sqlManager = new MySQLManager(config);
 
         MongoDBManager mongoDBManager = new MongoDBManager(this);
-        mailboxService = new MailboxService(sqlManager,mongoDBManager);
+        mailboxService = new MailboxService(sqlManager, mongoDBManager);
         packageService = new PackageService(sqlManager);
 
         services.add(mailboxService);
         services.add(packageService);
 
-        Bukkit.getPluginManager().registerEvents(new BlockListener(),this);
-        Bukkit.getPluginManager().registerEvents(new InteractListener(),this);
-        Bukkit.getPluginManager().registerEvents(new HeadDatabaseListener(),this);
-        Bukkit.getPluginManager().registerEvents(new JoinListener(),this);
-    }
+        Bukkit.getPluginManager().registerEvents(new BlockListener(), this);
+        Bukkit.getPluginManager().registerEvents(new InteractListener(), this);
+        Bukkit.getPluginManager().registerEvents(new HeadDatabaseListener(), this);
+        Bukkit.getPluginManager().registerEvents(new JoinListener(), this);
+        Bukkit.getPluginManager().registerEvents(new InventoryListener(mongoDBManager), this);
+        Bukkit.getPluginManager().registerEvents(new OpenListener(),this);
 
-    @Override
-    public void onLoad() {
+        new PackCommand(this);
+        new MailboxCommand(this);
+
+
         services.forEach((service -> service.onLoad(this)));
-
-
     }
 
     public static Posta getInstance() {

@@ -34,9 +34,10 @@ public class TrackSubcommand implements Subcommand {
         StringBuilder builder = new StringBuilder(color(config.getString("messages.pack.track.prefix").replace("%target%",target)));
 
         for (Package pack : packages) {
-            builder.append(color(config.getString("messages.pack.track.element")
-                    .replace("%id%",String.valueOf(pack.getId()))
-                    .replace("%status%",config.getString("messages.pack.track.status."+pack.getStatus().name().toLowerCase(Locale.ROOT)))));
+            builder.append("\n")
+                    .append(color(config.getString("messages.pack.track.element")
+                        .replace("%id%",String.valueOf(pack.getId()))
+                        .replace("%status%",config.getString("messages.pack.status."+pack.getStatus().name().toLowerCase(Locale.ROOT)))));
         }
 
         p.sendMessage(builder.toString());

@@ -33,9 +33,10 @@ public class SearchSubcommand implements Subcommand {
         StringBuilder builder = new StringBuilder(color(config.getString("messages.mailbox.list.prefix").replace("%target%",owner)));
 
         for (Triple<Integer> loc : mailboxList) {
-            builder.append(color(config.getString("messages.mailbox.list.element")
-                    .replace("%target%",owner)
-                    .replace("%location%", loc.getFirst() + " " + loc.getSecond() + " " + loc.getThird())));
+            builder.append("\n")
+                    .append(color(config.getString("messages.mailbox.list.element")
+                        .replace("%target%",owner)
+                        .replace("%location%", loc.getFirst() + " " + loc.getSecond() + " " + loc.getThird())));
         }
 
         p.sendMessage(builder.toString());

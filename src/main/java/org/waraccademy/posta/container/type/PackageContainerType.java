@@ -1,5 +1,6 @@
 package org.waraccademy.posta.container.type;
 
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.lolok.containers.ContainersPlugin;
 import me.lolok.containers.containers.ContainersManager;
 import me.lolok.containers.containers.types.ContainerType;
@@ -7,11 +8,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.waraccademy.items.items.builder.ItemBuilder;
-import org.waraccademy.libs.nbtapi.NBTItem;
 import org.waraccademy.posta.Posta;
 import org.waraccademy.posta.container.container.PackageContainer;
-
-import java.util.List;
 
 public class PackageContainerType implements ContainerType {
     private final String id;

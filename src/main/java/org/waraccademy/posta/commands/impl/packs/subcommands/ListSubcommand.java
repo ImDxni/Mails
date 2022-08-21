@@ -21,7 +21,7 @@ public class ListSubcommand implements Subcommand {
         if(args.length < 1) return false;
 
         Player p = (Player) sender;
-        String target = args[1];
+        String target = args[0];
 
         List<Package> packages = service.getPackages(target);
         if(packages.isEmpty()){
@@ -32,15 +32,16 @@ public class ListSubcommand implements Subcommand {
         StringBuilder builder = new StringBuilder(color(config.getString("messages.pack.list.prefix").replace("%target%",target)));
 
         for (Package pack : packages) {
-            builder.append(color(config.getString("messages.pack.list.element")
-                    .replace("%id%",String.valueOf(pack.getId()))
-                    .replace("%sender%",pack.getSender())
-                    .replace("%status%",config.getString("messages.pack.list.status."+pack.getStatus().name().toLowerCase(Locale.ROOT)))));
+            builder.append("\n")
+                    .append(color(config.getString("messages.pack.list.element")
+                        .replace("%id%",String.valueOf(pack.getId()))
+                        .replace("%sender%",pack.getSender())
+                        .replace("%status%",config.getString("messages.pack.status."+pack.getStatus().name().toLowerCase(Locale.ROOT)))));
         }
 
         p.sendMessage(builder.toString());
 
-        return false;
+        return true;
     }
 
     @Override

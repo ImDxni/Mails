@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 group = 'org.waraccademy'
@@ -20,6 +21,10 @@ repositories {
         name= 'jitpack.io'
         url = 'https://jitpack.io'
     }
+    maven {
+        name="nbtapi"
+        url = "https://repo.codemc.org/repository/maven-public/"
+    }
 }
 
 dependencies {
@@ -29,6 +34,7 @@ dependencies {
     compileOnly 'org.waraccademy:Containers:1.0.1-SNAPSHOT'
     compileOnly 'org.waraccademy:MongoConnector:1.0.0-SNAPSHOT'
 
+    implementation 'de.tr7zw:item-nbt-api:2.10.0'
     implementation 'com.github.glyart:mystral:1.4.4-SNAPSHOT'
 }
 
@@ -55,4 +61,9 @@ processResources {
     filesMatching('plugin.yml') {
         expand props
     }
+}
+
+shadowJar{
+    relocate 'com.glyart.mystral' , 'org.waraccademy.posta.mystral'
+    relocate 'de.tr7zw.changeme.nbtapi' , 'org.waraccademy.posta.nbtapi'
 }

@@ -1,12 +1,12 @@
 package org.waraccademy.posta.commands.impl.packs.subcommands;
 
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.waraccademy.libs.nbtapi.NBTItem;
 import org.waraccademy.posta.Posta;
 import org.waraccademy.posta.commands.Subcommand;
 import org.waraccademy.posta.database.sql.MySQLManager;
@@ -61,6 +61,7 @@ public class SignSubcommand implements Subcommand {
                     }
 
                     nbtItem.setBoolean("Signed",true);
+                    nbtItem.setString("packTarget",packTarget);
                     ItemStack packItem = nbtItem.getItem();
                     String name = color(config.getString("pack.name").replace("%id%",String.valueOf(id)));
                     List<String> lore = config.getStringList("pack.lore")

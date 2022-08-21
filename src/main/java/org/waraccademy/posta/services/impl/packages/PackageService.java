@@ -64,12 +64,6 @@ public class PackageService implements Service {
         });
 
     }
-
-    public void deletePackage(int id){
-        packages.removeIf(pack -> pack.getId() == id);
-
-        sqlManager.deletePackage(id);
-    }
     public Optional<Package> getPackage(int id){
         return packages.stream().filter(pack -> pack.getId() == id).findAny();
     }
@@ -94,6 +88,7 @@ public class PackageService implements Service {
             Package pack = optionalPack.get();
 
             pack.setStatus(status);
+            sqlManager.updatePackage(id,status);
         }
     }
 

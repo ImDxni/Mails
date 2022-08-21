@@ -10,7 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
-import org.waraccademy.libs.nbtapi.NBTItem;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.waraccademy.posta.Posta;
 import org.waraccademy.posta.services.impl.mailboxes.Mailbox;
 import org.waraccademy.posta.services.impl.mailboxes.MailboxService;
@@ -33,8 +33,9 @@ public class BlockListener implements Listener {
         if(nbtItem.hasKey("Mailbox")){
             String owner = nbtItem.getString("MailboxOwner");
             boolean locked = nbtItem.getBoolean("Mailbox");
+            int itemID = nbtItem.getInteger("itemID");
 
-            service.createMailbox(e.getBlock().getLocation(),owner,locked);
+            service.createMailbox(e.getBlock().getLocation(),owner,locked,itemID);
         }
     }
 
@@ -48,16 +49,20 @@ public class BlockListener implements Listener {
             Mailbox box = mailboxOptional.get();
 
             String owner = box.getOwner();
-            if(owner.equalsIgnoreCase(p.getName()) || p.hasPermission("metropolis.posta.rompi."+owner.toLowerCase(Locale.ROOT))){
+            if(owner.equalsIgnoreCase(p.getName()) || p.hasPermission("metropolis.posta.owner."+owner.toLowerCase(Locale.ROOT))){
                 if(p.isSneaking()){
                     if(box.hasPackages()){
-                        p.sendMessage(color(config.getString("message.has-packages")));
+                        p.sendMessage(color(config.getString("messages.has-packages")));
+                        e.setCancelled(true);
                         return;
                     }
 
                     e.getBlock().setType(Material.AIR);
                     boolean locked = box.isLocked();
-                    loc.getWorld().dropItem(loc,service.getItemStack(box.getId(),owner,locked));
+
+                    loc.getWorld().dropItem(loc,service.getItemStack(box.getItem(),owner,locked));
+
+                    service.deleteMailbox(loc);
                 }
             }
 

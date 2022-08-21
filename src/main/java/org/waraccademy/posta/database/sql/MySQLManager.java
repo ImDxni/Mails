@@ -11,13 +11,12 @@ import org.waraccademy.posta.Posta;
 import org.waraccademy.posta.services.impl.packages.Package;
 
 import java.sql.ResultSet;
-import java.sql.Types;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import static java.sql.Types.INTEGER;
-import static java.sql.Types.VARCHAR;
+import static java.sql.Types.*;
 
 public class MySQLManager {
     private AsyncDatabase database;
@@ -69,6 +68,7 @@ public class MySQLManager {
                 "    owner       int               not null," +
                 "    packages tinyint(1) default 0," +
                 "    private  tinyint(1) default 0," +
+                "    item        int unsigned      not null," +
                 "    constraint mailboxes_ibfk_1" +
                 "        foreign key (owner) references players (id)" +
                 ");";
@@ -83,6 +83,7 @@ public class MySQLManager {
                 "          sender int                                      null," +
                 "          target int                                      null," +
                 "          status enum ('stop', 'delivering', 'delivered') default 'stop'," +
+                "          date   timestamp                                default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP," +
                 "          constraint packages_ibfk_1" +
                 "              foreign key (sender) references players (id)," +
                 "          constraint packages_ibfk_2" +
@@ -98,10 +99,17 @@ public class MySQLManager {
                 .thenCompose((integer -> database.update("create index if not exists target on packages (target)", false)));
     }
 
+    public void updateMailbox(int id, boolean packages){
+        @Language("MySQL")
+                String sql = "UPDATE mailboxes SET packages=? WHERE id = ?";
+
+        database.update(sql,new Object[]{packages,id},false,BOOLEAN,INTEGER);
+    }
+
 
     public void getAllMailboxes(Consumer<ResultSet> consumer) {
         @Language("MySQL")
-        String sql = "SELECT m.x,m.y,m.z,m.packages,m.private,m.id,p.name FROM mailboxes m INNER JOIN players p on m.owner = p.id";
+        String sql = "SELECT m.x,m.y,m.z,m.packages,m.private,m.id,p.name,m.item FROM mailboxes m INNER JOIN players p on m.owner = p.id";
 
         database.queryForList(sql, ((resultSet, rowNumber) -> {
             consumer.accept(resultSet);
@@ -118,7 +126,7 @@ public class MySQLManager {
     }
     public CompletableFuture<List<Package>> getAllPackages(){
         @Language("MySQL")
-                String sql = "SELECT packages.id,sender.name,target.name FROM packages JOIN players sender on packages.sender = sender.id JOIN players target on packages.target = target.id;";
+                String sql = "SELECT packages.id,packages.status,sender.name,target.name FROM packages JOIN players sender on packages.sender = sender.id JOIN players target on packages.target = target.id;";
 
         return database.queryForList(sql,((resultSet,rowNumber) -> {
             int id = resultSet.getInt("id");
@@ -128,9 +136,16 @@ public class MySQLManager {
             Package pack = new Package(sender,target);
             pack.setId(id);
 
-            pack.setStatus(Package.STATUS.valueOf(resultSet.getString("status")));
+            pack.setStatus(Package.STATUS.valueOf(resultSet.getString("status").toUpperCase(Locale.ROOT)));
             return pack;
         }));
+    }
+
+    public void updatePackage(int id, Package.STATUS status){
+        @Language("MySQL")
+        String sql = "UPDATE packages SET status=? WHERE id = ?";
+
+        database.update(sql,new Object[]{status.name().toLowerCase(Locale.ROOT),id},false,VARCHAR,INTEGER);
     }
     public void insertOwner(String owner){
         @Language("MySQL")
@@ -142,11 +157,11 @@ public class MySQLManager {
     public CompletableFuture<Boolean> ownerExists(String owner){
         return database.query("SELECT * FROM players WHERE name = ?;", new Object[]{owner}, ResultSet::next, VARCHAR);
     }
-    public CompletableFuture<Integer> insertMailbox(Location loc, String owner){
+    public CompletableFuture<Integer> insertMailbox(Location loc, String owner,int item){
         @Language("MySQL")
-                String sql = "INSERT INTO mailboxes(x,y,z,owner) VALUES (?,?,?,(SELECT id FROM players WHERE name=?))";
+                String sql = "INSERT INTO mailboxes(x,y,z,item,owner) VALUES (?,?,?,?,(SELECT id FROM players WHERE name=?))";
 
-        return database.update(sql,new Object[]{loc.getBlockX(),loc.getBlockY(),loc.getBlockZ(),owner},true,INTEGER,INTEGER,INTEGER,VARCHAR);
+        return database.update(sql,new Object[]{loc.getBlockX(),loc.getBlockY(),loc.getBlockZ(),item,owner},true,INTEGER,INTEGER,INTEGER,INTEGER,VARCHAR);
     }
 
     public CompletableFuture<Integer> insertPackage(String sender, String target){
@@ -156,19 +171,11 @@ public class MySQLManager {
         return database.update(sql,new Object[]{sender,target},true, VARCHAR,VARCHAR);
     }
 
-    public CompletableFuture<Integer> deleteMailbox(Location loc){
+    public void deleteMailbox(Location loc){
         @Language("MySQL")
                 String sql = "DELETE FROM mailboxes WHERE x=? AND y=? AND z=?";
 
-        return database.update(sql,new Object[]{loc.getBlockX(),loc.getBlockY(),loc.getBlockZ()},false,INTEGER,INTEGER,INTEGER);
+        database.update(sql, new Object[]{loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()}, false, INTEGER, INTEGER, INTEGER);
     }
-
-    public CompletableFuture<Integer> deletePackage(int id){
-        @Language("MySQL")
-                String sql = "DELETE FROM packages WHERE id=?";
-
-        return database.update(sql,new Object[]{id},false,INTEGER);
-    }
-
 
 }
