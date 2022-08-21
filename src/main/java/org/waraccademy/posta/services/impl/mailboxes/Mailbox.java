@@ -3,16 +3,11 @@ package org.waraccademy.posta.services.impl.mailboxes;
 public class Mailbox {
     private int id;
     private final String owner;
-    private boolean locked = false;
+    private boolean locked;
 
     private boolean packages = false;
 
     private final int item;
-
-    public Mailbox(String owner, int item) {
-        this.owner = owner;
-        this.item = item;
-    }
 
     public Mailbox(String owner, boolean locked,int item) {
         this.owner = owner;

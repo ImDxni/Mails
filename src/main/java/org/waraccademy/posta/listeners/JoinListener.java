@@ -10,6 +10,8 @@ import org.waraccademy.posta.services.impl.mailboxes.Mailbox;
 import org.waraccademy.posta.services.impl.mailboxes.MailboxService;
 import org.waraccademy.posta.utils.Triple;
 
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.waraccademy.posta.utils.Utils.color;
@@ -40,6 +42,20 @@ public class JoinListener implements Listener {
             Mailbox mailbox = box.get();
 
             if(mailbox.hasPackages()){
+                e.getPlayer().sendMessage(color(config.getString("messages.packages-available")
+                        .replace("%x%",String.valueOf(location.getFirst()))
+                        .replace("%y%",String.valueOf(location.getSecond()))
+                        .replace("%z%",String.valueOf(location.getThird()))));
+            }
+        }
+
+        for (Map.Entry<Triple<Integer>, Mailbox> entry : mailboxService.getMailboxes().entrySet()) {
+            Triple<Integer> location = entry.getKey();
+            Mailbox mailbox = entry.getValue();
+
+            if(!mailbox.isLocked()) continue;
+
+            if(e.getPlayer().hasPermission("metropolis.posta.owner."+ mailbox.getOwner().toLowerCase(Locale.ROOT))){
                 e.getPlayer().sendMessage(color(config.getString("messages.packages-available")
                         .replace("%x%",String.valueOf(location.getFirst()))
                         .replace("%y%",String.valueOf(location.getSecond()))

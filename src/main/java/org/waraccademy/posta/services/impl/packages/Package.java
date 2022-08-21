@@ -35,6 +35,6 @@ public class Package {
     }
 
     public enum STATUS{
-        STOP,DELIVERING,DELIVERED;
+        STOP,DELIVERING,DELIVERED
     }
 }

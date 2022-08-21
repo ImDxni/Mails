@@ -1,6 +1,5 @@
 package org.waraccademy.posta;
 
-import de.tr7zw.nbtinjector.NBTInjector;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;

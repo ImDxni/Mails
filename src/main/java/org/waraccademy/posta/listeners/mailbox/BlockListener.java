@@ -36,6 +36,8 @@ public class BlockListener implements Listener {
             int itemID = nbtItem.getInteger("itemID");
 
             service.createMailbox(e.getBlock().getLocation(),owner,locked,itemID);
+
+            e.getPlayer().sendMessage(color(config.getString("messages.mailbox-placed")));
         }
     }
 
@@ -63,6 +65,8 @@ public class BlockListener implements Listener {
                     loc.getWorld().dropItem(loc,service.getItemStack(box.getItem(),owner,locked));
 
                     service.deleteMailbox(loc);
+
+                    e.getPlayer().sendMessage(color(config.getString("messages.mailbox-removed")));
                 }
             }
 

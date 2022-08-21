@@ -1,5 +1,6 @@
 package org.waraccademy.posta.listeners.packages;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -46,13 +47,35 @@ public class InteractListener implements Listener {
 
                 NBTItem nbtItem = new NBTItem(item);
                 if (nbtItem.hasKey("Container") && nbtItem.hasKey("Signed") && nbtItem.getBoolean("Signed")) {
-                    int boxID = box.getId();
+                    if(nbtItem.getString("packTarget").equalsIgnoreCase(box.getOwner())) {
+                        int boxID = box.getId();
 
-                    player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+                        player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
 
-                    mailboxService.insertItems(boxID, item);
+                        mailboxService.insertItems(boxID, item);
 
-                    box.setPackages(true);
+                        box.setPackages(true);
+
+                        Player target = Bukkit.getPlayer(box.getOwner());
+                        if(target == null || !target.isOnline()) return;
+
+                        String message = color(config.getString("messages.packages-available")
+                                .replace("%x%",String.valueOf(clickedLoc.getBlockX()))
+                                .replace("%y%",String.valueOf(clickedLoc.getBlockY()))
+                                .replace("%z%",String.valueOf(clickedLoc.getBlockZ())));
+                        target.sendMessage(message);
+
+                        if(box.isLocked()) {
+                            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                                if(onlinePlayer.hasPermission("metropolis.posta.owner."+ box.getOwner().toLowerCase(Locale.ROOT))){
+                                    onlinePlayer.sendMessage(message);
+                                }
+                            }
+                        }
+
+                    } else {
+                        player.sendMessage(color(config.getString("wrong-mailbox")));
+                    }
                 } else {
                     String owner = box.getOwner();
                     if(owner.equalsIgnoreCase(player.getName()) || player.hasPermission("metropolis.posta.owner."+owner.toLowerCase(Locale.ROOT))){

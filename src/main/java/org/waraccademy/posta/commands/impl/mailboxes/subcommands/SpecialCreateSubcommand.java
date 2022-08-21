@@ -41,6 +41,7 @@ public class SpecialCreateSubcommand implements Subcommand {
                 int id = optionalID.get();
 
                 p.getInventory().addItem(service.getItemStack(id,target,true));
+                p.sendMessage(color(config.getString("messages.mailbox-created")));
             } else {
                 p.sendMessage(color(config.getString("messages.color-not-found")));
             }

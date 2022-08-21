@@ -86,19 +86,4 @@ public class MongoDBManager {
 
         return subscriber.getResult();
     }
-
-    public CompletableFuture<List<ItemStack>> getPackageItems(int id) {
-        CompletableSubscriber<Document, List<ItemStack>> subscriber = new CompletableSubscriber<>(
-                (document) -> {
-                    List<Document> items = document.getList("inventory", Document.class);
-
-                    return items.stream().map(ItemStackSerializer::deserialize).collect(Collectors.toList());
-                });
-
-        containers.find(Filters.eq("id", id))
-                .subscribe(subscriber);
-
-        return subscriber.getResult();
-    }
-
 }

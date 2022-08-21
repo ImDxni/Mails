@@ -92,6 +92,9 @@ public class MailboxService implements Service {
 
     }
 
+    public Map<Triple<Integer>, Mailbox> getMailboxes() {
+        return mailboxes;
+    }
 
     public void deleteMailbox(Location location){
         Triple<Integer> loc = Triple.of(location.getBlockX(), location.getBlockY(), location.getBlockZ());

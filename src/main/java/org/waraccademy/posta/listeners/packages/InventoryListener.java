@@ -11,10 +11,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.waraccademy.posta.Posta;
 import org.waraccademy.posta.container.container.PackageContainer;
 import org.waraccademy.posta.database.mongo.MongoDBManager;
-import org.waraccademy.posta.services.impl.packages.PackageService;
 import org.waraccademy.posta.utils.Utils;
 
 public class InventoryListener implements Listener {

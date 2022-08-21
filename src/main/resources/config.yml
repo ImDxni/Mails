@@ -39,6 +39,11 @@ messages:
   player-not-found: "Giocatore non trovato"
   color-not-found: "Colore non trovato!"
   pack-signed: "Pacco firmato!"
+  package-created: "Pacco creato!"
+  wrong-mailbox: "Puoi inserire il pacco solo nella cassetta del destinatario"
+  mailbox-created: "Cassetta postale creata correttamente!"
+  mailbox-placed: "Cassetta postale piazzata correttamente!"
+  mailbox-removed: "Cassetta postale rimossa correttamente!"
   packages-available: "Hai un pacco da prelevare alla cassetta postale: %x% %y% %z%"
   package-updated: "Pacco aggiornato"
   mailbox:
