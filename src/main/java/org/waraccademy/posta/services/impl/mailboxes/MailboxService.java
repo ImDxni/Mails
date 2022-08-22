@@ -12,7 +12,6 @@ import org.waraccademy.posta.database.mongo.MongoDBManager;
 import org.waraccademy.posta.database.sql.MySQLManager;
 import org.waraccademy.posta.services.Service;
 import org.waraccademy.posta.utils.Triple;
-import org.waraccademy.posta.utils.Utils;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -78,7 +77,7 @@ public class MailboxService implements Service {
     public void createMailbox(Location location, String owner, boolean locked,int itemID){
         Mailbox mailbox = new Mailbox(owner,locked,itemID);
 
-        sqlManager.insertMailbox(location,owner,itemID).whenComplete((id,error) -> {
+        sqlManager.insertMailbox(location,owner,itemID,locked).whenComplete((id,error) -> {
             if(error != null){
                 error.printStackTrace();
                 return;
@@ -154,7 +153,7 @@ public class MailboxService implements Service {
         String name = color(config.getString("mailbox.name").replace("%owner%", target));
         List<String> lore = config.getStringList("mailbox.lore")
                 .stream()
-                .map(Utils::color)
+                .map(s -> color(s.replace("%owner%",target)))
                 .collect(Collectors.toList());
 
         ItemMeta meta = item.getItemMeta();

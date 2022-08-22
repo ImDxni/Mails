@@ -157,11 +157,11 @@ public class MySQLManager {
     public CompletableFuture<Boolean> ownerExists(String owner){
         return database.query("SELECT * FROM players WHERE name = ?;", new Object[]{owner}, ResultSet::next, VARCHAR);
     }
-    public CompletableFuture<Integer> insertMailbox(Location loc, String owner,int item){
+    public CompletableFuture<Integer> insertMailbox(Location loc, String owner,int item,boolean locked){
         @Language("MySQL")
-                String sql = "INSERT INTO mailboxes(x,y,z,item,owner) VALUES (?,?,?,?,(SELECT id FROM players WHERE name=?))";
+                String sql = "INSERT INTO mailboxes(x,y,z,item,private,owner) VALUES (?,?,?,?,?,(SELECT id FROM players WHERE name=?))";
 
-        return database.update(sql,new Object[]{loc.getBlockX(),loc.getBlockY(),loc.getBlockZ(),item,owner},true,INTEGER,INTEGER,INTEGER,INTEGER,VARCHAR);
+        return database.update(sql,new Object[]{loc.getBlockX(),loc.getBlockY(),loc.getBlockZ(),item,locked,owner},true,INTEGER,INTEGER,INTEGER,INTEGER,BOOLEAN,VARCHAR);
     }
 
     public CompletableFuture<Integer> insertPackage(String sender, String target){

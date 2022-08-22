@@ -56,14 +56,10 @@ public class InteractListener implements Listener {
 
                         box.setPackages(true);
 
-                        Player target = Bukkit.getPlayer(box.getOwner());
-                        if(target == null || !target.isOnline()) return;
-
                         String message = color(config.getString("messages.packages-available")
                                 .replace("%x%",String.valueOf(clickedLoc.getBlockX()))
                                 .replace("%y%",String.valueOf(clickedLoc.getBlockY()))
                                 .replace("%z%",String.valueOf(clickedLoc.getBlockZ())));
-                        target.sendMessage(message);
 
                         if(box.isLocked()) {
                             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -71,10 +67,16 @@ public class InteractListener implements Listener {
                                     onlinePlayer.sendMessage(message);
                                 }
                             }
+                            return;
                         }
 
+                        Player target = Bukkit.getPlayer(box.getOwner());
+                        if(target == null || !target.isOnline()) return;
+
+                        target.sendMessage(message);
+
                     } else {
-                        player.sendMessage(color(config.getString("wrong-mailbox")));
+                        player.sendMessage(color(config.getString("messages.wrong-mailbox")));
                     }
                 } else {
                     String owner = box.getOwner();
