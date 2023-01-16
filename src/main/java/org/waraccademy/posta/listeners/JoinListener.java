@@ -55,11 +55,13 @@ public class JoinListener implements Listener {
 
             if(!mailbox.isLocked()) continue;
 
-            if(e.getPlayer().hasPermission("metropolis.posta.owner."+ mailbox.getOwner().toLowerCase(Locale.ROOT))){
-                e.getPlayer().sendMessage(color(config.getString("messages.packages-available")
-                        .replace("%x%",String.valueOf(location.getFirst()))
-                        .replace("%y%",String.valueOf(location.getSecond()))
-                        .replace("%z%",String.valueOf(location.getThird()))));
+            if(mailbox.hasPackages()) {
+                if (e.getPlayer().hasPermission("metropolis.posta.owner." + mailbox.getOwner().toLowerCase(Locale.ROOT))) {
+                    e.getPlayer().sendMessage(color(config.getString("messages.packages-available")
+                            .replace("%x%", String.valueOf(location.getFirst()))
+                            .replace("%y%", String.valueOf(location.getSecond()))
+                            .replace("%z%", String.valueOf(location.getThird()))));
+                }
             }
         }
     }

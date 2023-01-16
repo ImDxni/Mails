@@ -31,7 +31,7 @@ public class PackageContainerType implements ContainerType {
     @Override
     public ItemStack getItem(int i) {
         ItemStack item;
-        if(material == Material.SKULL){
+        if(material == Material.PLAYER_HEAD){
             item = Posta.getInstance().getHeadAPI().getItemHead(String.valueOf(data));
         } else {
             item = ItemBuilder.create()

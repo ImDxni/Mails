@@ -32,7 +32,7 @@ public abstract class ComplexCommand extends Command implements TabExecutor {
 
         Subcommand sub = commands.get(args[0].toLowerCase());
         if (sub == null) {
-            sender.sendMessage(color("&c&lERRORE &7Comando sconosciuto, digita &f/" + getLabel() + " help"));
+            sender.sendMessage(color("&c&lERRORE &7Comando sconosciuto"));
             return;
         }
 

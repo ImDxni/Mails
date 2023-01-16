@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 
+import java.util.Locale;
+
 public class PackageContainer extends DefaultContainer {
 
     public PackageContainer(int id, ContainerType type) {
@@ -21,7 +23,9 @@ public class PackageContainer extends DefaultContainer {
         ItemStack item = player.getInventory().getItemInMainHand();
         NBTItem nbtItem = new NBTItem(item);
 
-        if(nbtItem.getBoolean("Signed") && !nbtItem.getString("packTarget").equals(player.getName()))
+		String target = nbtItem.hasKey("packTarget") ? nbtItem.getString("packTarget") : "";
+		
+        if(nbtItem.getBoolean("Signed") && !(target.equals(player.getName()) || player.hasPermission("metropolis.posta.owner."+target.toLowerCase(Locale.ROOT))))
             return;
 
         super.open(player);

@@ -3,6 +3,7 @@ package org.waraccademy.posta.database.sql;
 import com.glyart.mystral.database.AsyncDatabase;
 import com.glyart.mystral.database.Credentials;
 import com.glyart.mystral.database.Mystral;
+import com.glyart.mystral.datasource.HikariFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -38,7 +39,11 @@ public class MySQLManager {
                 .pool("Posta")
                 .build();
 
-        database = Mystral.newAsyncDatabase(credentials,(command) -> Bukkit.getScheduler().runTaskAsynchronously(Posta.getInstance(), command));
+        HikariFactory factory = new HikariFactory();
+        factory.setCredentials(credentials);
+        factory.setProperty("useSSL",false);
+        database = Mystral.newAsyncDatabase(factory, (command) -> Bukkit.getScheduler().runTaskAsynchronously(Posta.getInstance(), command));
+
     }
 
     private void setupTables(){
